@@ -1,0 +1,3 @@
+[submodule "fullstackopen"]
+	path = fullstackopen
+	url = https://github.com/tuomasmakinen/fullstackopen.git
