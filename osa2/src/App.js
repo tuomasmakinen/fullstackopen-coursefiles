@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Note from './components/Note';
+import Notification from './components/Notification';
 import noteService from './services/notes';
 
 export default class App extends React.Component {
@@ -9,7 +10,8 @@ export default class App extends React.Component {
 		this.state = {
 			notes: [],
 			newNote: '',
-			showAll: true
+			showAll: true,
+			error: null
 		};
 
 	}
@@ -38,7 +40,16 @@ export default class App extends React.Component {
 					this.setState( {
 						notes: this.state.notes.map( note => note.id !== id ? note : response.data )
 					} );
-				} );
+				} )
+				.catch( error => {
+					this.setState( {
+						error: `muistiinpano '${ note.content }' on jo valitettavasti poistettu palvelimelta`,
+						notes: this.state.notes.filter( n => n.id !== id )
+					} )
+					setTimeout( () => {
+						this.setState( { error: null } )
+					}, 5000 )
+				} )
 		}
 	};
 
@@ -78,6 +89,8 @@ export default class App extends React.Component {
 			<div>
 				<h1>Muistiinpanot</h1>
 				
+				<Notification message={ this.state.error } />
+
 				<div>
 					<button onClick={ this.toggleVisible } >
 						Näytä { label }
