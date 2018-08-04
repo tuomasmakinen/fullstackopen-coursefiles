@@ -26,7 +26,7 @@ let notes = [
 ];
 
 const generateId = () => {
-	const maxId = notes.length > 0 ? notes.map( n => n.id ).sort().reverse()[] : 0;
+	const maxId = notes.length > 0 ? notes.map( n => n.id ).sort().reverse()[0] : 1;
 	return maxId + 1;
 }
 
