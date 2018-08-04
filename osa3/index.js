@@ -1,8 +1,11 @@
 const express = require( 'express' );
-const app = express();
 const bodyParser = require( 'body-parser' );
+const cors = require( 'cors' );
 
-app.use( bodyParser );
+const app = express();
+app.use( express.static( 'build' ) );
+app.use( bodyParser.json() );
+app.use( cors() );
 
 let notes = [
 	{
@@ -28,17 +31,17 @@ let notes = [
 const generateId = () => {
 	const maxId = notes.length > 0 ? notes.map( n => n.id ).sort().reverse()[0] : 1;
 	return maxId + 1;
-}
+};
 
-app.get( '/', ( request, response ) => {
+app.get( '/api/', ( request, response ) => {
 	response.send( '<h1>Hello World!</h1>' );
 } );
 
-app.get( '/notes', ( request, response ) => {
+app.get( '/api/notes', ( request, response ) => {
 	response.json( notes );
 } );
 
-app.get( '/notes/:id', ( request, response ) => {
+app.get( '/api/notes/:id', ( request, response ) => {
 	const id = Number( request.params.id );
 	const note = notes.find( note => note.id === id );
 
@@ -49,14 +52,14 @@ app.get( '/notes/:id', ( request, response ) => {
 	}
 } );
 
-app.delete( '/notes/:id', ( request, response ) => {
+app.delete( '/api/notes/:id', ( request, response ) => {
 	const id = Number( request.params.id );
 	notes = notes.filter( note => note.id !== id );
 
 	response.status( 204 ).end();
 } );
 
-app.post( '/notes', ( request, response ) => {
+app.post( '/api/notes', ( request, response ) => {
 	const body = request.body;
 
 	if ( body.content === undefined ) {
@@ -75,7 +78,7 @@ app.post( '/notes', ( request, response ) => {
 	response.json( note );
 } );
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen( PORT, () => {
 	console.log( `Server running on port ${ PORT }` );
 } );
